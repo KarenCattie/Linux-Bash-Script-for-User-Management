@@ -1,0 +1,83 @@
+#!/bin/bash
+#Lab 8
+#Student name: Yalin Su
+#Student number: 040791845
+#Course: CST8102_320 Operating Systems fund
+#Script name: myscript.sh
+#Submission date: Nov 24, 2022
+#Description: this script file contain commands that allow user to create, and manage the user accounts.
+option="n"
+while [ "$option" != "Q" ] && [ "$option" != "q" ]
+do
+	clear
+	echo "Choose one of the following options:"
+	echo "A to Create a user account"
+	echo "B to Delete a user account"
+	echo "C to Change supplementary group for a user account"
+	echo "D to Change initial group for a user account"
+	echo "E to Change default login shell for a user account"
+	echo "F to Change account expiration date for a user account"
+	echo "Q to Quit"
+	
+	read -p "What would you like to do?:" option
+if [ "$option" = "A" ] || [ "$option" = "a" ]
+then
+	read -p "Please enter username:" userNameA
+	useradd -d /home/22F/lab8 -s /bin/bash -m $userNameA
+	tail /etc/passwd
+	echo "$userNameA has been created." 
+	sleep 3
+elif [ "$option" = "B" ] || [ "$option" = "b" ]
+then
+	read -p "PLease enter the username that you want to delete:" userNameB
+		userdel -r $userNameB
+		tail /etc/passwd
+		echo "$userNameB has been deleted."
+	sleep 3
+elif [ "$option" = "C" ] || [ "$option" = "c" ]
+then
+	read -p "Please enter user name:" userNameC
+	tail /etc/group
+	read -p "Please enter group name:" groupNameC
+	groupadd $groupNameC
+	usermod -G $groupNameC $userNameC
+	tail /etc/group
+	echo "The user name that you enter is: $userNameC"
+	echo "And user has just added to group $groupNameC"
+	sleep 3
+elif [ "$option" = "D" ] || [ "$option" = "d" ]
+then
+	read -p "PLease enter user name:" userNameD
+	echo "GID list:"
+	tail /etc/passwd
+	read -p "PLease enter the new group ID:" newGroupName
+	usermod -g $newGroupName $userNameD
+	tail /etc/passwd
+	echo "$userNameD initial group has changed."
+	sleep 3
+elif [ "$option" = "E" ] || [ "$option" = "e" ]
+then
+	read -p "PLease enter the user name that you want to change the login shell:" userNameE
+	read -p "Please enter shell name that you want to change to:" newLoginShell
+	usermod -s $newLoginShell $userNameE
+	tail /etc/passwd
+	echo "$userNameE default logon shell has changed."
+	sleep 3
+elif [ "$option" = "F" ] || [ "$option" = "f" ]
+then
+	read -p "PLease enter the user name that you want to change the expiry date:" userNameF
+	read -p "PLease enter the expiration date: (must enter as YYYY-MM-DD)" expirDate
+	usermod -e $expirDate $userNameF
+	chage -l $userNameF
+	echo "$userNameF expiration date has changed to $expirDate."
+	sleep 3
+elif [ "$option" = "Q" ] || [ "$option" = "q" ]
+then
+	echo "Program shutting down."
+	break
+
+else
+	echo "Invalid input"
+	sleep 3
+fi
+done
